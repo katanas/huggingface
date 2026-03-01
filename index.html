@@ -1,722 +1,850 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Network - Protect Earth</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>掌机俄罗斯方块</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         :root {
-            --primary: #2e7d32;
-            --secondary: #4caf50;
-            --accent: #8bc34a;
-            --light: #e8f5e9;
-            --dark: #1b5e20;
-            --text: #333333;
-            --white: #ffffff;
+            --console-bg: #f0cc5b;
+            /* 经典黄色掌机 */
+            --screen-bg: #879571;
+            /* 经典液晶屏绿 */
+            --block-color: #111;
+            --ghost-color: rgba(17, 17, 17, 0.2);
+            --btn-color: #e52521;
+            /* 按钮红 */
+            --dpad-color: #333;
+            --text-color: #333;
         }
-
         body {
-            background-color: var(--light);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .nav-container {
+            background-color: #222;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            touch-action: none;
+            /* 防止移动端滚动 */
         }
-
-        .logo {
+        #game-console {
+            background-color: var(--console-bg);
+            width: 360px;
+            height: 700px;
+            border-radius: 20px 20px 60px 20px;
+            box-shadow:
+                inset -5px -5px 15px rgba(0, 0, 0, 0.2),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.4),
+                10px 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            box-sizing: border-box;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .logo i {
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 2rem;
-        }
-
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
+            flex-direction: column;
             position: relative;
         }
-
-        nav ul li a:hover {
-            color: var(--accent);
-        }
-
-        nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
+        /* 顶部装饰条纹 */
+        .decorations {
             display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--white);
+            gap: 5px;
+            margin-bottom: 20px;
         }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--accent);
-            color: var(--white);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        section {
-            padding: 5rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
+        .decor-line {
             height: 4px;
-            background-color: var(--accent);
+            background-color: rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
             border-radius: 2px;
         }
-
-        .section-title p {
-            color: var(--text);
-            max-width: 700px;
-            margin: 0 auto;
+        /* 屏幕区域 */
+        #screen-bezel {
+            background-color: #444;
+            border-radius: 10px 10px 40px 10px;
+            padding: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
         }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-img {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-img img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .about-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 2rem 1rem;
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .stat-item i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--text);
-        }
-
-        .initiatives {
-            background-color: var(--white);
-        }
-
-        .initiatives-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .initiative-card {
-            background-color: var(--light);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .initiative-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .initiative-img {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .initiative-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .initiative-card:hover .initiative-img img {
-            transform: scale(1.1);
-        }
-
-        .initiative-content {
-            padding: 1.5rem;
-        }
-
-        .initiative-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .initiative-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .cta {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            text-align: center;
-            padding: 5rem 0;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta .btn {
-            background-color: var(--white);
-            color: var(--primary);
-        }
-
-        .cta .btn:hover {
-            background-color: var(--accent);
-            color: var(--white);
-        }
-
-        footer {
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 3rem 0 1rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-column p {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links li a {
-            color: var(--light);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links li a:hover {
-            color: var(--accent);
-            padding-left: 5px;
-        }
-
-        .social-links {
+        #screen-container {
+            background-color: var(--screen-bg);
+            border-radius: 5px;
+            padding: 10px;
             display: flex;
-            gap: 1rem;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3);
+            border: 2px solid #334;
+            min-height: 320px;
         }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
+        /* 游戏画布区 */
+        #canvas-wrapper {
+            position: relative;
+            background: rgba(0, 0, 0, 0.05);
+            /* 弱化背景网格 */
         }
-
-        .social-links a:hover {
-            background-color: var(--accent);
-            transform: translateY(-5px);
+        canvas {
+            display: block;
         }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        /* 侧边信息区 */
+        #info-panel {
+            width: 80px;
+            margin-left: 10px;
+            display: flex;
+            flex-direction: column;
+            color: #111;
+            font-weight: bold;
+            font-size: 14px;
         }
-
-        .mobile-menu {
-            display: none;
-            font-size: 1.5rem;
+        .info-box {
+            margin-bottom: 15px;
+        }
+        .info-title {
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+        .info-value {
+            text-align: right;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            padding: 2px 4px;
+            background: rgba(0, 0, 0, 0.05);
+            min-height: 18px;
+        }
+        #next-piece-canvas {
+            width: 60px;
+            height: 60px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.05);
+            margin-top: 5px;
+        }
+        /* 控制面板 */
+        #controls {
+            flex-grow: 1;
+            position: relative;
+        }
+        .label {
+            position: absolute;
+            font-family: sans-serif;
+            font-size: 10px;
+            font-style: italic;
+            color: rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        /* 方向键 (D-pad) */
+        #d-pad {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            width: 110px;
+            height: 110px;
+        }
+        .d-btn {
+            position: absolute;
+            background-color: var(--dpad-color);
+            border: none;
+            border-radius: 4px;
+            box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.2),
+                2px 2px 4px rgba(0, 0, 0, 0.4);
             cursor: pointer;
         }
-
-        @media (max-width: 992px) {
-            .about-content {
-                grid-template-columns: 1fr;
+        .d-btn:active,
+        .d-btn.active {
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5);
+            transform: translate(1px, 1px);
+        }
+        #btn-up {
+            top: 0;
+            left: 35px;
+            width: 40px;
+            height: 35px;
+            border-radius: 5px 5px 0 0;
+        }
+        #btn-down {
+            bottom: 0;
+            left: 35px;
+            width: 40px;
+            height: 35px;
+            border-radius: 0 0 5px 5px;
+        }
+        #btn-left {
+            top: 35px;
+            left: 0;
+            width: 35px;
+            height: 40px;
+            border-radius: 5px 0 0 5px;
+        }
+        #btn-right {
+            top: 35px;
+            right: 0;
+            width: 35px;
+            height: 40px;
+            border-radius: 0 5px 5px 0;
+        }
+        #d-center {
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--dpad-color);
+        }
+        .d-pad-label {
+            top: 160px;
+            left: 55px;
+            transform: translateX(-50%);
+        }
+        /* 动作按钮 */
+        #action-buttons {
+            position: absolute;
+            top: 40px;
+            right: 20px;
+            width: 110px;
+            height: 90px;
+        }
+        .action-btn {
+            position: absolute;
+            background-color: var(--btn-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            box-shadow: inset -2px -2px 6px rgba(0, 0, 0, 0.3),
+                inset 2px 2px 6px rgba(255, 255, 255, 0.4),
+                2px 2px 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+        .action-btn:active,
+        .action-btn.active {
+            box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.5);
+            transform: translate(1px, 1px);
+        }
+        #btn-b {
+            bottom: 0px;
+            left: 0;
+        }
+        #btn-a {
+            top: 0px;
+            right: 0;
+        }
+        .action-label-b {
+            bottom: -20px;
+            left: 20px;
+        }
+        .action-label-a {
+            top: 50px;
+            right: 20px;
+        }
+        /* 系统按钮 (Start/Select) */
+        #system-buttons {
+            position: absolute;
+            bottom: 15px;
+            left: 45%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+        }
+        .sys-btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sys-btn {
+            background-color: #555;
+            width: 45px;
+            height: 12px;
+            border-radius: 6px;
+            border: none;
+            transform: rotate(-25deg);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .sys-btn:active,
+        .sys-btn.active {
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.5);
+            transform: rotate(-25deg) translate(1px, 1px);
+        }
+        .sys-label {
+            font-size: 10px;
+        }
+        /* 扬声器孔 */
+        #speaker {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            gap: 6px;
+            transform: rotate(-25deg);
+        }
+        .speaker-hole {
+            width: 6px;
+            height: 35px;
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        /* 屏显文字 */
+        #osd-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            background: rgba(135, 149, 113, 0.8);
+            z-index: 10;
+        }
+        .osd-text {
+            color: #111;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px rgba(135, 149, 113, 1), -1px -1px 0px rgba(135, 149, 113, 1);
+            text-align: center;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
             }
-            
-            .initiatives-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
+            50% {
+                opacity: 0;
             }
         }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: var(--primary);
-                flex-direction: column;
-                padding: 1rem 0;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            nav ul.active {
-                display: flex;
-            }
-            
-            nav ul li {
-                margin: 0;
-                padding: 0.8rem 0;
-            }
-            
-            .mobile-menu {
-                display: block;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animation for stats counter */
-        .counter {
-            transition: all 0.5s ease;
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-seedling"></i>
-                <span>Green Network</span>
-            </div>
-            <nav>
-                <div class="mobile-menu">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#initiatives">Initiatives</a></li>
-                    <li><a href="#get-involved">Get Involved</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+    <div id="game-console">
+        <!-- 顶部装饰条 -->
+        <div class="decorations">
+            <div class="decor-line"></div>
+            <div class="decor-line"></div>
+            <div class="decor-line"></div>
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container hero-content">
-            <h1>Protect Our Planet, Preserve Our Future</h1>
-            <p>Join the global movement to create a sustainable world through conservation, education, and community action.</p>
-            <a href="#get-involved" class="btn">Join Our Network</a>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>About Green Network</h2>
-                <p>We are a global community dedicated to environmental protection and sustainable development.</p>
-            </div>
-            <div class="about-content">
-                <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Team planting trees">
-                </div>
-                <div class="about-text">
-                    <h3>Our Mission</h3>
-                    <p>Green Network is committed to creating a sustainable future by protecting natural ecosystems, promoting renewable energy, and empowering communities to take environmental action.</p>
-                    <p>Founded in 2010, we've grown from a small grassroots organization to an international network with over 50,000 members across 120 countries.</p>
-                    <p>Our approach combines scientific research, community engagement, and policy advocacy to address the most pressing environmental challenges of our time.</p>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-            </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <i class="fas fa-tree"></i>
-                    <h3 class="counter" data-target="2500000">0</h3>
-                    <p>Trees Planted</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="50000">0</h3>
-                    <p>Active Members</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-globe-americas"></i>
-                    <h3 class="counter" data-target="120">0</h3>
-                    <p>Countries Reached</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-recycle"></i>
-                    <h3 class="counter" data-target="1500">0</h3>
-                    <p>Cleanup Projects</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Initiatives Section -->
-    <section class="initiatives" id="initiatives">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Initiatives</h2>
-                <p>Discover the key programs and projects we're implementing to protect our planet.</p>
-            </div>
-            <div class="initiatives-grid">
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://dialogue.earth/content/uploads/2021/04/lessons-from-the-rush-to-reforest-china-dialogue-2400x1599.jpg" alt="Reforestation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Global Reforestation</h3>
-                        <p>Planting millions of trees worldwide to restore ecosystems, combat climate change, and protect biodiversity.</p>
-                        <a href="#" class="btn">Learn More</a>
+        <!-- 屏幕边框与屏幕 -->
+        <div id="screen-bezel">
+            <div id="screen-container">
+                <div id="canvas-wrapper">
+                    <canvas id="game-canvas" width="160" height="320"></canvas>
+                    <div id="osd-layer">
+                        <div class="osd-text" id="pause-text">PAUSE</div>
+                        <div class="osd-text hidden" id="gameover-text">GAME<br>OVER</div>
+                        <div class="osd-text hidden" id="start-text">PRESS<br>START</div>
                     </div>
                 </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1621451537084-482c73073a0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Ocean Conservation">
+                <div id="info-panel">
+                    <div class="info-box">
+                        <div class="info-title">SCORE</div>
+                        <div class="info-value" id="score-val">0</div>
                     </div>
-                    <div class="initiative-content">
-                        <h3>Ocean Conservation</h3>
-                        <p>Protecting marine ecosystems, reducing plastic pollution, and promoting sustainable fishing practices.</p>
-                        <a href="#" class="btn">Learn More</a>
+                    <div class="info-box">
+                        <div class="info-title">LINES</div>
+                        <div class="info-value" id="lines-val">0</div>
                     </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Renewable Energy">
+                    <div class="info-box">
+                        <div class="info-title">LEVEL</div>
+                        <div class="info-value" id="level-val">1</div>
                     </div>
-                    <div class="initiative-content">
-                        <h3>Renewable Energy</h3>
-                        <p>Promoting solar, wind, and other clean energy sources to reduce dependence on fossil fuels.</p>
-                        <a href="#" class="btn">Learn More</a>
+                    <div class="info-box">
+                        <div class="info-title">NEXT</div>
+                        <canvas id="next-piece-canvas" width="60" height="60"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta" id="get-involved">
-        <div class="container">
-            <h2>Join Our Global Movement</h2>
-            <p>Together, we can create a sustainable future for generations to come. Every action counts, no matter how small.</p>
-            <a href="#" class="btn">Become a Member</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Green Network</h3>
-                    <p>We are dedicated to protecting our planet through collaborative action, education, and sustainable solutions.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+        <!-- 控制区域 -->
+        <div id="controls">
+            <!-- 十字键 -->
+            <div id="d-pad">
+                <div id="d-center"></div>
+                <button class="d-btn" id="btn-up" aria-label="Up"></button>
+                <button class="d-btn" id="btn-down" aria-label="Down"></button>
+                <button class="d-btn" id="btn-left" aria-label="Left"></button>
+                <button class="d-btn" id="btn-right" aria-label="Right"></button>
+                <div class="label d-pad-label">DIRECTION</div>
+            </div>
+            <!-- AB键 -->
+            <div id="action-buttons">
+                <button class="action-btn" id="btn-b" aria-label="B"></button>
+                <button class="action-btn" id="btn-a" aria-label="A"></button>
+                <div class="label action-label-b">B</div>
+                <div class="label action-label-a">A</div>
+            </div>
+            <!-- Select/Start -->
+            <div id="system-buttons">
+                <div class="sys-btn-wrapper">
+                    <button class="sys-btn" id="btn-select" aria-label="Select"></button>
+                    <div class="label sys-label">SELECT</div>
                 </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#initiatives">Initiatives</a></li>
-                        <li><a href="#get-involved">Get Involved</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Our Programs</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Reforestation</a></li>
-                        <li><a href="#">Ocean Cleanup</a></li>
-                        <li><a href="#">Wildlife Protection</a></li>
-                        <li><a href="#">Climate Education</a></li>
-                        <li><a href="#">Sustainable Agriculture</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact Us</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Copper Creek Drive, New York</p>
-                    <p><i class="fas fa-phone"></i> +1 (312) 171-0771</p>
-                    <p><i class="fas fa-envelope"></i> support@greennetwork.org</p>
+                <div class="sys-btn-wrapper">
+                    <button class="sys-btn" id="btn-start" aria-label="Start"></button>
+                    <div class="label sys-label">START</div>
                 </div>
             </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Network. All rights reserved.</p>
+            <!-- 扬声器 -->
+            <div id="speaker">
+                <div class="speaker-hole"></div>
+                <div class="speaker-hole"></div>
+                <div class="speaker-hole"></div>
+                <div class="speaker-hole"></div>
+                <div class="speaker-hole"></div>
             </div>
         </div>
-    </footer>
-
+    </div>
     <script>
-        // Mobile Menu Toggle
-        document.querySelector('.mobile-menu').addEventListener('click', function() {
-            document.querySelector('nav ul').classList.toggle('active');
-        });
-
-        // Counter Animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter');
-            const speed = 200; // The lower the slower
-            
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
-                
-                const inc = target / speed;
-                
-                if(count < target) {
-                    counter.innerText = Math.ceil(count + inc);
-                    setTimeout(animateCounters, 1);
-                } else {
-                    counter.innerText = target;
-                }
+        // === 核心常量与变量 ===
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = 16; // 160px / 10 cols
+        const NEXT_BLOCK_SIZE = 14;
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const nextCanvas = document.getElementById('next-piece-canvas');
+        const nextCtx = nextCanvas.getContext('2d');
+        // 我们只有一种颜色: 液晶黑
+        const COLOR = getComputedStyle(document.documentElement).getPropertyValue('--block-color').trim();
+        const GHOST_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--ghost-color').trim();
+        const SCREEN_BG = getComputedStyle(document.documentElement).getPropertyValue('--screen-bg').trim();
+        // 砖块形状定义 (I, J, L, O, S, T, Z)
+        const SHAPES = [
+            [], // 空
+            [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]], // I (1)
+            [[1, 0, 0], [1, 1, 1], [0, 0, 0]], // J (2)
+            [[0, 0, 1], [1, 1, 1], [0, 0, 0]], // L (3)
+            [[1, 1], [1, 1]],             // O (4)
+            [[0, 1, 1], [1, 1, 0], [0, 0, 0]], // S (5)
+            [[0, 1, 0], [1, 1, 1], [0, 0, 0]], // T (6)
+            [[1, 1, 0], [0, 1, 1], [0, 0, 0]]  // Z (7)
+        ];
+        let grid = createMatrix(COLS, ROWS);
+        // 玩家对象
+        const player = {
+            pos: { x: 0, y: 0 },
+            matrix: null,
+            score: 0,
+            lines: 0,
+            level: 1
+        };
+        let nextMatrix = null;
+        let dropCounter = 0;
+        let dropInterval = 1000;
+        let lastTime = 0;
+        // 游戏状态
+        let isGameOver = false;
+        let isPaused = false;
+        let isStarted = false;
+        let reqId = null; // 用于请求动画帧的ID
+        // --- DOM Elements ---
+        const scoreVal = document.getElementById('score-val');
+        const linesVal = document.getElementById('lines-val');
+        const levelVal = document.getElementById('level-val');
+        const osdLayer = document.getElementById('osd-layer');
+        const pauseText = document.getElementById('pause-text');
+        const gameoverText = document.getElementById('gameover-text');
+        const startText = document.getElementById('start-text');
+        // === 工具函数 ===
+        function createMatrix(w, h) {
+            const matrix = [];
+            while (h--) {
+                matrix.push(new Array(w).fill(0));
+            }
+            return matrix;
+        }
+        function createPiece(typeIndex) {
+            return SHAPES[typeIndex].map(row => [...row]); // 深拷贝
+        }
+        // 设置下落速度
+        function setSpeed() {
+            // level 1: 1000ms, level 2: 900ms... 最小 100ms
+            dropInterval = Math.max(100, 1000 - (player.level - 1) * 100);
+        }
+        // 绘制单个方块
+        function drawBlock(context, x, y, size, color, isGhost = false) {
+            context.fillStyle = color;
+            // 留出1像素的边框感，类似经典俄罗斯方块
+            context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+            if (!isGhost) {
+                // 中心镂空效果
+                context.fillStyle = SCREEN_BG;
+                context.fillRect(x * size + 4, y * size + 4, size - 8, size - 8);
+                context.fillStyle = color;
+                context.fillRect(x * size + 6, y * size + 6, size - 12, size - 12);
+            }
+        }
+        // 绘制矩阵
+        function drawMatrix(context, matrix, offset, size, color, isGhost = false) {
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        drawBlock(context, x + offset.x, y + offset.y, size, color, isGhost);
+                    }
+                });
             });
         }
-
-        // Initialize counters when page loads
-        window.addEventListener('load', animateCounters);
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    document.querySelector('nav ul').classList.remove('active');
-                }
+        // 绘制网格背景
+        function drawGrid(context, w, h, size) {
+            context.strokeStyle = "rgba(0,0,0,0.05)";
+            context.lineWidth = 1;
+            for (let i = 0; i <= w; i++) {
+                context.beginPath();
+                context.moveTo(i * size, 0);
+                context.lineTo(i * size, h * size);
+                context.stroke();
+            }
+            for (let j = 0; j <= h; j++) {
+                context.beginPath();
+                context.moveTo(0, j * size);
+                context.lineTo(w * size, j * size);
+                context.stroke();
+            }
+        }
+        // 计算幽灵方块位置
+        function getGhostPos() {
+            const ghost = {
+                matrix: player.matrix,
+                pos: { x: player.pos.x, y: player.pos.y }
+            };
+            while (!collide(grid, ghost)) {
+                ghost.pos.y++;
+            }
+            ghost.pos.y--; // 退回一步
+            return ghost.pos;
+        }
+        function draw() {
+            // 清理主画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 画背景网格
+            drawGrid(ctx, COLS, ROWS, BLOCK_SIZE);
+            // 画幽灵方块
+            if (player.matrix) {
+                const ghostPos = getGhostPos();
+                drawMatrix(ctx, player.matrix, ghostPos, BLOCK_SIZE, GHOST_COLOR, true);
+            }
+            // 画已固定的方块
+            drawMatrix(ctx, grid, { x: 0, y: 0 }, BLOCK_SIZE, COLOR);
+            // 画玩家当前方块
+            if (player.matrix) {
+                drawMatrix(ctx, player.matrix, player.pos, BLOCK_SIZE, COLOR);
+            }
+            // --- 画NEXT画布 ---
+            nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+            if (nextMatrix) {
+                // 计算居中偏移
+                const nextW = nextMatrix[0].length * NEXT_BLOCK_SIZE;
+                const nextH = nextMatrix.length * NEXT_BLOCK_SIZE;
+                const offX = (nextCanvas.width - nextW) / 2 / NEXT_BLOCK_SIZE;
+                const offY = (nextCanvas.height - nextH) / 2 / NEXT_BLOCK_SIZE;
+                drawMatrix(nextCtx, nextMatrix, { x: offX, y: offY }, NEXT_BLOCK_SIZE, COLOR);
+            }
+        }
+        function merge(grid, player) {
+            player.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        grid[y + player.pos.y][x + player.pos.x] = value;
+                    }
+                });
             });
+        }
+        function collide(grid, player) {
+            const m = player.matrix;
+            const o = player.pos;
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 &&
+                        (grid[y + o.y] && grid[y + o.y][x + o.x]) !== 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        // 旋转矩阵
+        function rotateMatrix(matrix, dir) {
+            // 转置
+            for (let y = 0; y < matrix.length; ++y) {
+                for (let x = 0; x < y; ++x) {
+                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+                }
+            }
+            // 翻转
+            if (dir > 0) {
+                matrix.forEach(row => row.reverse());
+            } else {
+                matrix.reverse();
+            }
+        }
+        function playerReset() {
+            if (!nextMatrix) {
+                nextMatrix = createPiece(1 + Math.floor(Math.random() * 7));
+            }
+            player.matrix = nextMatrix;
+            nextMatrix = createPiece(1 + Math.floor(Math.random() * 7));
+            // 居中
+            player.pos.y = 0;
+            player.pos.x = (Math.floor(COLS / 2)) - (Math.floor(player.matrix[0].length / 2));
+            // 检查死亡
+            if (collide(grid, player)) {
+                gameOver();
+            }
+        }
+        function playerMove(offset) {
+            player.pos.x += offset;
+            if (collide(grid, player)) {
+                player.pos.x -= offset;
+                return false;
+            }
+            return true;
+        }
+        function playerDrop() {
+            player.pos.y++;
+            if (collide(grid, player)) {
+                player.pos.y--;
+                merge(grid, player);
+                playerReset();
+                arenaSweep();
+            }
+            dropCounter = 0;
+        }
+        function hardDrop() {
+            while (!collide(grid, player)) {
+                player.pos.y++;
+            }
+            player.pos.y--;
+            merge(grid, player);
+            playerReset();
+            arenaSweep();
+            dropCounter = 0;
+        }
+        function playerRotate(dir) {
+            const pos = player.pos.x;
+            let offset = 1;
+            rotateMatrix(player.matrix, dir);
+            // 墙踢机制
+            while (collide(grid, player)) {
+                player.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > player.matrix[0].length) {
+                    // 旋转失败，还原
+                    rotateMatrix(player.matrix, -dir);
+                    player.pos.x = pos;
+                    return;
+                }
+            }
+        }
+        function arenaSweep() {
+            let rowCount = 0;
+            outer: for (let y = grid.length - 1; y >= 0; --y) {
+                for (let x = 0; x < grid[y].length; ++x) {
+                    if (grid[y][x] === 0) {
+                        continue outer;
+                    }
+                }
+                // 该行满了，移除它，在顶部插入空行
+                const row = grid.splice(y, 1)[0].fill(0);
+                grid.unshift(row);
+                ++y;
+                rowCount++;
+            }
+            if (rowCount > 0) {
+                player.lines += rowCount;
+                // 经典计分法 (简化): 100, 300, 500, 800
+                const lineScores = [0, 100, 300, 500, 800];
+                player.score += lineScores[rowCount] * player.level;
+                // 每 10 行升一级
+                player.level = Math.floor(player.lines / 10) + 1;
+                setSpeed();
+                updateScore();
+            }
+        }
+        function updateScore() {
+            scoreVal.innerText = player.score;
+            linesVal.innerText = player.lines;
+            levelVal.innerText = player.level;
+        }
+        function initGame() {
+            grid = createMatrix(COLS, ROWS);
+            player.score = 0;
+            player.lines = 0;
+            player.level = 1;
+            nextMatrix = null;
+            setSpeed();
+            updateScore();
+            playerReset();
+            isStarted = true;
+            isGameOver = false;
+            isPaused = false;
+            osdLayer.classList.add('hidden');
+            pauseText.classList.add('hidden');
+            gameoverText.classList.add('hidden');
+            startText.classList.add('hidden');
+            draw();
+        }
+        function gameOver() {
+            isGameOver = true;
+            isStarted = false;
+            osdLayer.classList.remove('hidden');
+            gameoverText.classList.remove('hidden');
+            cancelAnimationFrame(reqId);
+            reqId = null;
+        }
+        function showStartScreen() {
+            // 画个空屏或者装饰
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid(ctx, COLS, ROWS, BLOCK_SIZE);
+            nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+            osdLayer.classList.remove('hidden');
+            startText.classList.remove('hidden');
+            pauseText.classList.add('hidden');
+            gameoverText.classList.add('hidden');
+        }
+        function togglePause() {
+            if (!isStarted || isGameOver) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                osdLayer.classList.remove('hidden');
+                pauseText.classList.remove('hidden');
+                cancelAnimationFrame(reqId);
+                reqId = null;
+            } else {
+                osdLayer.classList.add('hidden');
+                pauseText.classList.add('hidden');
+                lastTime = 0; // 重置时间计算
+                update();
+            }
+        }
+        // === 主循环 ===
+        function update(time = 0) {
+            if (isPaused || isGameOver || !isStarted) return;
+            const deltaTime = time - (lastTime || time);
+            lastTime = time;
+            dropCounter += deltaTime;
+            if (dropCounter > dropInterval) {
+                playerDrop();
+            }
+            draw();
+            reqId = requestAnimationFrame(update);
+        }
+        // === 交互控制 ===
+        function handleAction(action) {
+            if (isGameOver) {
+                if (action === 'start') initGame();
+                return;
+            }
+            if (!isStarted) {
+                if (action === 'start') {
+                    initGame();
+                    update();
+                }
+                return;
+            }
+            if (action === 'start') {
+                togglePause();
+                return;
+            }
+            if (isPaused) return;
+            switch (action) {
+                case 'left':
+                    playerMove(-1);
+                    break;
+                case 'right':
+                    playerMove(1);
+                    break;
+                case 'down':
+                    playerDrop();
+                    break;
+                case 'up':
+                case 'a':
+                    playerRotate(1);
+                    break;
+                case 'b':
+                    playerRotate(-1);
+                    break;
+                case 'select':
+                    hardDrop();
+                    break;
+            }
+            if (!isPaused && !isGameOver) draw();
+        }
+        // --- 键盘事件 ---
+        const keyMap = {
+            37: { action: 'left', id: 'btn-left' },
+            39: { action: 'right', id: 'btn-right' },
+            40: { action: 'down', id: 'btn-down' },
+            38: { action: 'up', id: 'btn-up' },     // Arrow Up
+            88: { action: 'a', id: 'btn-a' },       // X key -> A button
+            90: { action: 'b', id: 'btn-b' },       // Z key -> B button
+            32: { action: 'select', id: 'btn-select' }, // Space -> Select / HardDrop
+            13: { action: 'start', id: 'btn-start' }    // Enter -> Start
+        };
+        const pressedKeys = new Set();
+        // 按键防反复触发处理(仅某些键避免连发过快，左右移动可利用系统的连续按键)
+        document.addEventListener('keydown', event => {
+            const mapping = keyMap[event.keyCode];
+            if (!mapping) return;
+            // 阻止默认行为(例如滚动页面、按空格下拉)
+            if ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1) {
+                event.preventDefault();
+            }
+            // 旋转和系统键不连发
+            const preventRepeat = ['up', 'a', 'b', 'start', 'select'].includes(mapping.action);
+            if (preventRepeat && pressedKeys.has(event.keyCode)) return;
+            pressedKeys.add(event.keyCode);
+            const btn = document.getElementById(mapping.id);
+            if (btn) btn.classList.add('active');
+            handleAction(mapping.action);
+        }, { passive: false });
+        document.addEventListener('keyup', event => {
+            const mapping = keyMap[event.keyCode];
+            if (!mapping) return;
+            pressedKeys.delete(event.keyCode);
+            const btn = document.getElementById(mapping.id);
+            if (btn) btn.classList.remove('active');
         });
+        // --- 触摸/鼠标事件 ---
+        function bindBtn(id, action) {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            // 一些简单的视觉反馈与逻辑触发
+            const startEvt = function (e) {
+                e.preventDefault();
+                btn.classList.add('active');
+                handleAction(action);
+                // 如果是方向键或下键，支持按住连发效果
+                if (['left', 'right', 'down'].includes(action)) {
+                    btn._interval = setInterval(() => {
+                        handleAction(action);
+                    }, action === 'down' ? 50 : 100);
+                }
+            };
+            const endEvt = function (e) {
+                e.preventDefault();
+                btn.classList.remove('active');
+                if (btn._interval) {
+                    clearInterval(btn._interval);
+                    btn._interval = null;
+                }
+            };
+            btn.addEventListener('mousedown', startEvt);
+            btn.addEventListener('touchstart', startEvt, { passive: false });
+            btn.addEventListener('mouseup', endEvt);
+            btn.addEventListener('mouseleave', endEvt);
+            btn.addEventListener('touchend', endEvt, { passive: false });
+            btn.addEventListener('touchcancel', endEvt, { passive: false });
+        }
+        bindBtn('btn-left', 'left');
+        bindBtn('btn-right', 'right');
+        bindBtn('btn-down', 'down');
+        bindBtn('btn-up', 'up');
+        bindBtn('btn-a', 'a');
+        bindBtn('btn-b', 'b');
+        bindBtn('btn-start', 'start');
+        bindBtn('btn-select', 'select');
+        // 初始化界面
+        updateScore();
+        showStartScreen();
     </script>
 </body>
-
 </html>
